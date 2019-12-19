@@ -1,4 +1,4 @@
-import HuffmanTreeNode
+import HuffmanTree
 import heapq
 
 def main():
@@ -18,11 +18,12 @@ def main():
     minHeap = []
     #Building minimum heap
     for k,v in char_freq_map.items():
-        node = HuffmanTreeNode.Node(k, v)
+        node = HuffmanTree.Node(k, v)
         minHeap.append(node)
     heapq.heapify(minHeap)
     # for node in minHeap:
     #     print("{} : {}".format(node.data, node.freq))
+    tree = HuffmanTree.Tree()
 
 if __name__ == "__main__":
     main()
