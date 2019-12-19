@@ -24,6 +24,9 @@ def main():
     # for node in minHeap:
     #     print("{} : {}".format(node.data, node.freq))
     tree = HuffmanTree.Tree()
+    root = tree.buildHuffmanTree(minHeap)
+    tree.assignCodes(root)
+    tree.printCodes(root)
 
 if __name__ == "__main__":
     main()

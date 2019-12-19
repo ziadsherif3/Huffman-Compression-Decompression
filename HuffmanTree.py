@@ -7,6 +7,7 @@ class Node:
         self.left = None
         self.right = None
         self.parent = None
+        self.code = None
     
     def __lt__(self, other):
         return self.freq < other.freq
@@ -34,6 +35,12 @@ class Node:
     
     def getFrequency(self):
         return self.freq
+    
+    def getCode(self):
+        return self.code
+    
+    def setCode(self, code):
+        self.code = code
         
 class Tree:
     def buildHuffmanTree(self, minHeap):
@@ -60,4 +67,30 @@ class Tree:
         
         if root.getRight() is not None:
             self.printTree(root.getRight())
+    
+    def assignCodes(self, root):
+        if root.getCode() is None:
+            if root.getLeft() is not None:
+                root.getLeft().setCode("0")
+                self.assignCodes(root.getLeft())
+            
+            if root.getRight() is not None:
+                root.getRight().setCode("1")
+                self.assignCodes(root.getRight())
         
+        else:
+            if root.getLeft() is not None:
+                root.getLeft().setCode(root.getCode() + "0")
+                self.assignCodes(root.getLeft())
+            
+            if root.getRight() is not None:
+                root.getRight().setCode(root.getCode() + "1")
+                self.assignCodes(root.getRight())
+    
+    def printCodes(self, root):
+        if root.getData() is None:
+            self.printCodes(root.getLeft())
+            self.printCodes(root.getRight())
+        
+        else:
+            print("{} -> {}".format(root.getData(), root.getCode()))
