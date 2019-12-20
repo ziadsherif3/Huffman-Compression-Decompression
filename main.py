@@ -1,11 +1,12 @@
 import HuffmanTree
 import heapq
+import time
 
 def compress():
     char_freq_map = {}
-    #Reading file and getting frequency of each character
     fileName = input("Enter the Name of the file: ")
     
+    #Reading file and getting frequency of each character
     try:
         with open(fileName) as f:
             while True:
@@ -37,6 +38,13 @@ def compress():
     root = tree.buildHuffmanTree(minHeap)
     tree.assignCodes(root)
     tree.printCodes(root)
+    
+    oldNBits = 0
+    
+    for k,v in char_freq_map.items():
+        oldNBits = oldNBits + (v * (len(str(bin(int.from_bytes(k.encode(), 'big')))) - 1))
+    
+    print("Compression ratio = {}%".format((tree.getNBits(root) / oldNBits) * 100))
 
 def decompress():
     pass
@@ -45,9 +53,15 @@ def main():
     while True:
         action = input("1)Compress\n2)Decompress\n3)exit\n")
         if action == "1":
+            start = time.time()
             compress()
+            end = time.time()
+            print("Execution time: {} secs".format(end - start))
         elif action == "2":
+            start = time.time()
             decompress()
+            end = time.time()
+            print("Execution time: {}secs".format(end - start))
         elif action == "3":
             break
         else:

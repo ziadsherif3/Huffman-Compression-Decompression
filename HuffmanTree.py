@@ -93,4 +93,11 @@ class Tree:
             self.printCodes(root.getRight())
         
         else:
-            print("{} -> {}".format(root.getData(), root.getCode()))
+            print("{} - {} - {}".format(root.getData(), bin(int.from_bytes(root.getData().encode(), 'big')), root.getCode()))
+    
+    def getNBits(self, root):
+        if root.getData() is None:
+            return (self.getNBits(root.getLeft()) + self.getNBits(root.getRight()))
+        else:
+            #print("{} {} {}".format(root.getData(), root.getFrequency(), len(str(root.getCode()))))
+            return (int(root.getFrequency()) * len(str(root.getCode())))
