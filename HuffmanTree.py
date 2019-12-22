@@ -145,7 +145,7 @@ def writeCompressedFile(root, file, fileName):
     
     f = open("{}.ZS".format(fileName[0:fileName.find('.')]), "ab")
     pickle.dump(bits2ascii(cFile), f)
-    bits2ascii(cFile)
+    # bits2ascii(cFile)
     
     # i = 0
     # while((i + 7) < len(cFile)):
@@ -203,7 +203,7 @@ def decompress(fileName):
         # print("{} {}".format(x[2:len(x)], len(x[2:len(x)])))
     ldcBFile = len(dcBFile)
     dcBFile = dcBFile[0: ldcBFile - int(pad)]
-    print(dcBFile)
+    # print(dcBFile)
     dcFile = ""
     temp = ""
     for c in dcBFile:
