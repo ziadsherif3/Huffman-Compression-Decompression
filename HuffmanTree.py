@@ -201,7 +201,9 @@ def decompress(fileName):
                 x = "0" + x
         dcBFile = dcBFile + x
         # print("{} {}".format(x[2:len(x)], len(x[2:len(x)])))
-    
+    ldcBFile = len(dcBFile)
+    dcBFile = dcBFile[0: ldcBFile - int(pad)]
+    print(dcBFile)
     dcFile = ""
     temp = ""
     for c in dcBFile:
