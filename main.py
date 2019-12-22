@@ -5,6 +5,7 @@ import time
 def compress():
     char_freq_map = {}
     fileName = input("Enter the Name of the file: ")
+    file = ""
     
     #Reading file and getting frequency of each character
     try:
@@ -13,6 +14,8 @@ def compress():
                 c = f.read(1)
                 if not c:
                     break
+                
+                file = file + c
                 
                 if c in char_freq_map:
                     char_freq_map[c] = char_freq_map[c] + 1
@@ -39,12 +42,14 @@ def compress():
     tree.assignCodes(root)
     tree.printCodes(root)
     
-    oldNBits = 0
+    # oldNBits = 0
     
-    for k,v in char_freq_map.items():
-        oldNBits = oldNBits + (v * (len(str(bin(int.from_bytes(k.encode(), 'big')))) - 1))
+    # for k,v in char_freq_map.items():
+    #     oldNBits = oldNBits + (v * (len(str(bin(int.from_bytes(k.encode(), 'big')))) - 1))
     
-    print("Compression ratio = {}%".format((tree.getNBits(root) / oldNBits) * 100))
+    # print("Compression ratio = {}%".format((tree.getNBits(root) / oldNBits) * 100))
+    
+    HuffmanTree.writeCompressedFile(root, file, fileName)
 
 def decompress():
     pass

@@ -1,4 +1,5 @@
 import heapq
+import os
 
 class Node:
     def __init__(self, data, freq):
@@ -95,9 +96,51 @@ class Tree:
         else:
             print("{} - {} - {}".format(root.getData(), bin(int.from_bytes(root.getData().encode(), 'big')), root.getCode()))
     
-    def getNBits(self, root):
-        if root.getData() is None:
-            return (self.getNBits(root.getLeft()) + self.getNBits(root.getRight()))
-        else:
-            #print("{} {} {}".format(root.getData(), root.getFrequency(), len(str(root.getCode()))))
-            return (int(root.getFrequency()) * len(str(root.getCode())))
+    # def getNBits(self, root):
+    #     if root.getData() is None:
+    #         return (self.getNBits(root.getLeft()) + self.getNBits(root.getRight()))
+    #     else:
+    #         return (int(root.getFrequency()) * len(str(root.getCode())))
+
+def buildCharCodeMap(root, char_code_map):
+    if root.getData() is None:
+        buildCharCodeMap(root.getLeft(), char_code_map)
+        buildCharCodeMap(root.getRight(), char_code_map)
+    else:
+        char_code_map[root.getData()] = root.getCode()
+
+def writeCompressedFile(root, file, fileName):
+    char_code_map = {}
+    
+    buildCharCodeMap(root, char_code_map)
+    
+    f = open("{}.ZS".format(fileName[0:fileName.find('.')]), "w+")
+    
+    for k,v in char_code_map.items():
+            f.write("{}{}\n".format(k, v))
+    
+    f.write("Z\n")
+    
+    cFile = ""
+    for c in file:
+        cFile = cFile + char_code_map[c]
+    
+    f.write("{}\n".format(8 - (len(cFile) % 8)))
+    for i in range(8 - (len(cFile) % 8)):
+        cFile = cFile + "0"
+    i = 0
+    while((i + 7) < len(cFile)):
+        b = int(cFile[i:i+7], 2)
+        f.write("{}".format(chr(b)))
+        i = i + 8
+    
+    f.close()
+    
+    oldSize = os.stat(fileName).st_size
+    newSize = os.stat("{}.ZS".format(fileName[0:fileName.find('.')])).st_size
+    
+    print("Compression ratio = {}%".format((newSize / oldSize) * 100))
+    
+    
+    
+    
