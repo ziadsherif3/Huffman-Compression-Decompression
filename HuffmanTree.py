@@ -129,6 +129,11 @@ def writeCompressedFile(root, file, fileName):
     f = open("{}.ZS".format(fileName[0:fileName.find('.')]), "w+")
     
     for k,v in char_code_map.items():
+        if k == "\n":
+            f.write("LF{}\n".format(v))
+        elif k == "\r":
+            f.write("CR{}\n".format(v))
+        else:
             f.write("{}{}\n".format(k, v))
     
     f.write("Z\n")
@@ -159,7 +164,7 @@ def writeCompressedFile(root, file, fileName):
     newSize = os.stat("{}.ZS".format(fileName[0:fileName.find('.')])).st_size
     
     print("Compression ratio = {}%".format((newSize / oldSize) * 100))
-    print(cFile)
+    # print(cFile)
 
 def decompress(fileName):
     char_code_map = {}
@@ -172,7 +177,12 @@ def decompress(fileName):
                 # print(line, end = '')
                 # line = f.readline()
                 if line != "Z\n":
-                    char_code_map[line[1: len(line) - 1]] = line[0]
+                    if line[0:2] == "LF":
+                        char_code_map[line[2: len(line) - 1]] = '\n'
+                    elif line[0:2] == "CR":
+                        char_code_map[line[2: len(line) - 1]] = '\r'
+                    else:
+                        char_code_map[line[1: len(line) - 1]] = line[0]
                     line = f.readline()
                     nb = nb + len(line) + 1
                 else:
@@ -187,7 +197,7 @@ def decompress(fileName):
     f.seek(nb)
     data = pickle.load(f)
     f.close()
-    print(data)
+    # print(data)
     
     dcBFile = ""
     
