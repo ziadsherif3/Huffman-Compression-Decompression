@@ -1,5 +1,6 @@
 import heapq
 import os
+import pickle
 
 class Node:
     def __init__(self, data, freq):
@@ -109,6 +110,17 @@ def buildCharCodeMap(root, char_code_map):
     else:
         char_code_map[root.getData()] = root.getCode()
 
+# def text_from_bits(bits, encoding='utf-8', errors='surrogatepass'):
+#     n = int(bits, 2)
+#     return n.to_bytes((n.bit_length() + 7) // 8, 'big').decode(encoding, errors) or '\0'
+
+# def text_to_bits(text, encoding='utf-8', errors='surrogatepass'):
+#     bits = bin(int.from_bytes(text.encode(encoding, errors), 'big'))[2:]
+#     return bits.zfill(8 * ((len(bits) + 7) // 8))
+
+def bits2ascii(b):
+    return ''.join(chr(int(''.join(x), 2)) for x in zip(*[iter(b)]*8))
+
 def writeCompressedFile(root, file, fileName):
     char_code_map = {}
     
@@ -128,11 +140,18 @@ def writeCompressedFile(root, file, fileName):
     f.write("{}\n".format(8 - (len(cFile) % 8)))
     for i in range(8 - (len(cFile) % 8)):
         cFile = cFile + "0"
-    i = 0
-    while((i + 7) < len(cFile)):
-        b = int(cFile[i:i+7], 2)
-        f.write("{}".format(chr(b)))
-        i = i + 8
+    
+    f.close()
+    
+    f = open("{}.ZS".format(fileName[0:fileName.find('.')]), "ab")
+    pickle.dump(bits2ascii(cFile), f)
+    bits2ascii(cFile)
+    
+    # i = 0
+    # while((i + 7) < len(cFile)):
+    #     b = int(cFile[i:i+7], 2)
+    #     f.write("{}".format(chr(b)))
+    #     i = i + 8
     
     f.close()
     
@@ -140,7 +159,57 @@ def writeCompressedFile(root, file, fileName):
     newSize = os.stat("{}.ZS".format(fileName[0:fileName.find('.')])).st_size
     
     print("Compression ratio = {}%".format((newSize / oldSize) * 100))
+    print(cFile)
+
+def decompress(fileName):
+    char_code_map = {}
     
+    try:
+        with open(fileName) as f:
+            line = f.readline()
+            nb = len(line) + 1
+            while line:
+                # print(line, end = '')
+                # line = f.readline()
+                if line != "Z\n":
+                    char_code_map[line[1: len(line) - 1]] = line[0]
+                    line = f.readline()
+                    nb = nb + len(line) + 1
+                else:
+                    break
+            line = f.readline()
+            nb = nb + len(line) + 1
+            pad = line[0: len(line) - 1]
+    except:
+        print("Error while opening file.")
+        return
+    f = open(fileName,'rb')
+    f.seek(nb)
+    data = pickle.load(f)
+    f.close()
+    print(data)
     
+    dcBFile = ""
     
+    for c in data:
+        x = bin(int(format(ord(c))))
+        l = len(x)
+        x = x[2:l]
+        l = len(x)
+        if l < 8:
+            for i in range(8 - l):
+                x = "0" + x
+        dcBFile = dcBFile + x
+        # print("{} {}".format(x[2:len(x)], len(x[2:len(x)])))
     
+    dcFile = ""
+    temp = ""
+    for c in dcBFile:
+        temp = temp + c
+        if char_code_map.get(temp) is not None:
+            dcFile = dcFile + char_code_map.get(temp)
+            temp = ""
+    
+    f = open("{}.ZSD".format(fileName[0:fileName.find('.')]), "w+")
+    for c in dcFile:
+        f.write(c)

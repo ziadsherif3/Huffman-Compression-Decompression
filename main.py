@@ -52,7 +52,11 @@ def compress():
     HuffmanTree.writeCompressedFile(root, file, fileName)
 
 def decompress():
-    pass
+    fileName = input("Enter the Name of the file: ")
+    if ".ZS" not in fileName:
+        print("Error while decompressing file.")
+        return
+    HuffmanTree.decompress(fileName)
 
 def main():
     while True:
