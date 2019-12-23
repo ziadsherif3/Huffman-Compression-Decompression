@@ -170,7 +170,7 @@ def decompress(fileName):
     char_code_map = {}
     
     try:
-        with open(fileName) as f:
+        with open(fileName, encoding = 'ANSI') as f:
             line = f.readline()
             nb = len(line) + 1
             while line:
