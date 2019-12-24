@@ -25,31 +25,34 @@ def compress():
     except:
         print("Error while opening file.")
         return
-    
-    # for k,v in char_freq_map.items():
-    #     print("{} : {}".format(k, v))
-    minHeap = []
-    #Building minimum heap
-    for k,v in char_freq_map.items():
-        node = HuffmanTree.Node(k, v)
-        minHeap.append(node)
-    
-    heapq.heapify(minHeap)
-    # for node in minHeap:
-    #     print("{} : {}".format(node.data, node.freq))
-    tree = HuffmanTree.Tree()
-    root = tree.buildHuffmanTree(minHeap)
-    tree.assignCodes(root)
-    tree.printCodes(root)
-    
-    # oldNBits = 0
-    
-    # for k,v in char_freq_map.items():
-    #     oldNBits = oldNBits + (v * (len(str(bin(int.from_bytes(k.encode(), 'big')))) - 1))
-    
-    # print("Compression ratio = {}%".format((tree.getNBits(root) / oldNBits) * 100))
-    
-    HuffmanTree.writeCompressedFile(root, file, fileName)
+    try:
+        # for k,v in char_freq_map.items():
+        #     print("{} : {}".format(k, v))
+        minHeap = []
+        #Building minimum heap
+        for k,v in char_freq_map.items():
+            node = HuffmanTree.Node(k, v)
+            minHeap.append(node)
+
+        heapq.heapify(minHeap)
+        # for node in minHeap:
+        # print("{} : {}".format(node.data, node.freq))
+        tree = HuffmanTree.Tree()
+        root = tree.buildHuffmanTree(minHeap)
+        tree.assignCodes(root)
+        tree.printCodes(root)
+
+        # oldNBits = 0
+
+        # for k,v in char_freq_map.items():
+        # oldNBits = oldNBits + (v * (len(str(bin(int.from_bytes(k.encode(), 'big')))) - 1))
+
+        # print("Compression ratio = {}%".format((tree.getNBits(root) / oldNBits) * 100))
+
+        HuffmanTree.writeCompressedFile(root, file, fileName)
+    except:
+        print("Error while compressing file.")
+        return
 
 def decompress():
     fileName = input("Enter the Name of the file: ")
