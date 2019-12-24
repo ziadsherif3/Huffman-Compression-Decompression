@@ -123,8 +123,18 @@ def bits2ascii(b):
 
 def writeCompressedFile(root, file, fileName):
     char_code_map = {}
+    acceptedMap = False
     
     buildCharCodeMap(root, char_code_map)
+    
+    for v in char_code_map.values():
+        if v is not None:
+            acceptedMap = True
+            break
+    
+    if not acceptedMap:
+        print("Error while writing compressed file.")
+        return
     
     f = open("{}.ZS".format(fileName[0:fileName.find('.')]), "w+")
     
